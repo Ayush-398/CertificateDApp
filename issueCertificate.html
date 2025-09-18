@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Issue Certificate</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.16.0/web3.min.js" integrity="sha512-EcohdIzTaj7kvP0ymM3RiKxanvfwGvjsrmouFROeLbtIXNXgQBDUee6wrf7L4bgwSiXGZRLi2AlDkOQ4WrCKYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="javascripts/app.js"></script>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 8px; }
+       
+    </style>
+</head>
+<body>
+    <h2>Issue Certificate</h2>
+    <button id="connectBtn" onclick="connectToMetaMask()">Connect Wallet</button>
+    <br><br>
+
+    <div class="form-group">
+        <label>Certificate ID *</label>
+        <input type="text" id="certificateID" placeholder="e.g. CERT-2024-001" required>
+    </div>
+
+    <div class="form-group">
+        <label>Candidate Name *</label>
+        <input type="text" id="candidateName" placeholder="Full Name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Course Name *</label>
+        <input type="text" id="courseName" placeholder="Blockchain 101" required>
+    </div>
+
+    <div class="form-group">
+        <label>Grade *</label>
+        <select id="grade">
+            <option>S</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Date *</label>
+        <input type="date" id="date" required>
+    </div>
+
+    <button onclick="issueCertificate()">Issue Certificate</button>
+
+    <script>
+        async function issueCertificate() {
+            if (!currentAccount) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+
+            const certificateID = document.getElementById("certificateID").value;
+            const candidateName = document.getElementById("candidateName").value;
+            const courseName = document.getElementById("courseName").value;
+            const grade = document.getElementById("grade").value;
+            const date = document.getElementById("date").value;
+
+            if (!certificateID || !candidateName || !courseName || !grade || !date) {
+                alert("All fields are required!");
+                return;
+            }
+
+            try {
+                const tx = await myContract.methods.issueCertificate(
+                    certificateID, courseName, candidateName, grade, date
+                ).send({ from: currentAccount });
+
+                alert("Certificate issued!\nTx: " + tx.transactionHash);
+                console.log("Transaction:", tx);
+            } catch (error) {
+                console.error(error);
+                alert("❌ Failed: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

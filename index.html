@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate DApp</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.16.0/web3.min.js" integrity="sha512-EcohdIzTaj7kvP0ymM3RiKxanvfwGvjsrmouFROeLbtIXNXgQBDUee6wrf7L4bgwSiXGZRLi2AlDkOQ4WrCKYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="javascripts/app.js"></script>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        .button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        input { padding: 8px; width: 300px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Certificate Verification Portal</h1>
+    <button id="connectBtn" class="button" onclick="connectToMetaMask()">Connect Wallet</button>
+    <br><br>
+    <input type="text" id="certificateID" placeholder="Enter Certificate ID">
+    <button class="button" onclick="getCertificateDetails()">View Certificate</button>
+
+    <script>
+        async function getCertificateDetails() {
+            const certificateID = document.getElementById("certificateID").value;
+            if (!certificateID) {
+                alert("Please enter a Certificate ID");
+                return;
+            }
+
+            try {
+                const result = await myContract.methods.getCertificate(certificateID).call();
+
+                if (!result[4]) { 
+                    alert("❌ Certificate not found!");
+                    return;
+                }
+
+                localStorage.setItem("certificateID", certificateID);
+                localStorage.setItem("candidateName", result[1]);
+                localStorage.setItem("courseName", result[0]);
+                localStorage.setItem("grade", result[2]);
+                localStorage.setItem("date", result[3]);
+
+                window.location.href = "viewCertificate.html";
+            } catch (error) {
+                console.error(error);
+                alert("Error: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
